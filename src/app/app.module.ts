@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MapModule } from './map/map.module';
+import { MapComponent } from './map/components/map.component';
+import * as $ from 'jquery';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MapModule
   ],
   providers: [],
   bootstrap: [AppComponent]
