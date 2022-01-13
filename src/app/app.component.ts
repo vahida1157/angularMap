@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
@@ -10,6 +10,7 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import { Circle, Fill, Style } from 'ol/style';
 import View from 'ol/View';
+import data from 'src/data/template.json';
 
 @Component({
   selector: 'app-root',
@@ -18,19 +19,29 @@ import View from 'ol/View';
 })
 export class AppComponent implements OnInit, AfterViewInit {
   map?: Map;
+  details?: Place[];
   @ViewChild('popup') popp?: ElementRef;
+  @ViewChild('list') list?: ElementRef;
 
   ngAfterViewInit(): void {
+    this.addDescriptionPopover();
+  }
+
+  private clearMarkerLayer() {
+    this.map?.getLayers().getArray()
+      .filter(layer => layer.getClassName() === 'marker')
+      .forEach(layer => this.map?.removeLayer(layer));
+  }
+
+  private addDescriptionPopover() {
     const element = this.popp?.nativeElement;
     const popup = new Overlay({
       element: element,
       positioning: 'bottom-center',
       stopEvent: false
-    })
-    this.map!.addOverlay(popup)
+    });
+    this.map!.addOverlay(popup);
     this.map!.on('click', (e) => {
-      console.log(e.coordinate);
-
       const feature = this.map!.forEachFeatureAtPixel(e.pixel, function (feature: any) {
         return feature;
       });
@@ -42,43 +53,75 @@ export class AppComponent implements OnInit, AfterViewInit {
         $(element).popover({
           placement: 'top',
           html: true,
-          animation: false,
-          content: feature.get('name')
+          animation: true,
+          content: '<div class="my-popover" dir="rtl">' +
+            '<h3 style="text-align: center;">' + feature.get('detail').name + '</h3>' +
+            '<p>شهر : <span>' + feature.get('detail').city + '</span></p>' +
+            '<p>توضیحات : <span>' + feature.get('detail').description + '</span></p>' +
+            '</div>',
         });
         // @ts-ignore
         $(element).popover('show');
       }
-    })
+    });
+
+    this.map!.on('pointerdrag', (e) => {
+      // @ts-ignore
+      $(element).popover('dispose');
+    });
   }
+
   ngOnInit(): void {
-
-    var feature = new Feature({
-      geometry: new Point(fromLonLat([51.33767203120139, 35.69984125123995])),
-      name: 'Marker'
-    });
-
-    feature.setStyle(this.markerStyle);
-    var layer = new VectorLayer({
-      source: new VectorSource({
-        features: [
-          feature
-        ]
-      })
-    });
+    this.details = data;
 
     const tileLayer = new TileLayer({
       source: new OSM(),
     })
 
     this.map = new Map({
-      layers: [tileLayer, layer],
+      layers: [tileLayer],
       view: new View({
         center: fromLonLat([51.33767203120139, 35.69984125123995]),
         zoom: 17,
       })
     });
 
+  }
 
+  onClick(detail: Place) {
+    // @ts-ignore
+    $(this.popp?.nativeElement).popover('dispose');
+    const longitude = parseFloat(detail.longitude);
+    const latitude = parseFloat(detail.latitude);
+
+    this.clearMarkerLayer();
+
+    this.map?.setView(new View({
+      center: fromLonLat([longitude, latitude]),
+      zoom: 17
+    }));
+
+
+    this.addMarkerLayer(longitude, latitude, detail);
+  }
+
+  private addMarkerLayer(longitude: number, latitude: number, detail: Place) {
+    var feature = new Feature({
+      geometry: new Point(fromLonLat([longitude, latitude])),
+      name: 'Marker',
+      detail: detail
+    });
+    feature.setStyle(this.markerStyle);
+
+    var layer = new VectorLayer({
+      source: new VectorSource({
+        features: [
+          feature
+        ]
+      }),
+      className: 'marker'
+    });
+    this.map?.addLayer(layer);
   }
 
   private markerStyle() {
@@ -90,5 +133,20 @@ export class AppComponent implements OnInit, AfterViewInit {
         })
       })
     })
+  }
+}
+
+class Place {
+  name: string;
+  city: string;
+  description: string;
+  latitude: string;
+  longitude: string;
+  constructor(name: string, city: string, description: string, latitude: string, longitude: string) {
+    this.name = name;
+    this.city = city;
+    this.description = description;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 }

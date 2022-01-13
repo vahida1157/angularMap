@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+
+.my-popover {
+    background: rgba(255, 99, 71, 0.9)!important;
+    border-radius: 20px;
+    padding: 10px;
+    padding-right: 20px;
+}
+
+.popover {
+    transition: transform 500ms !important;
+}
