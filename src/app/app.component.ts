@@ -8,7 +8,7 @@ import Overlay from 'ol/Overlay';
 import { fromLonLat } from 'ol/proj';
 import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
-import { Circle, Fill, Style } from 'ol/style';
+import { Circle, Fill, Icon, Style } from 'ol/style';
 import View from 'ol/View';
 import data from 'src/assets/template.json';
 
