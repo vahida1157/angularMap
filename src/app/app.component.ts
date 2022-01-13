@@ -10,7 +10,7 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import { Circle, Fill, Style } from 'ol/style';
 import View from 'ol/View';
-import data from 'src/data/template.json';
+import data from 'src/assets/template.json';
 
 @Component({
   selector: 'app-root',
@@ -131,7 +131,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         fill: new Fill({
           color: 'rgba(255,0,0,0.4)'
         })
-      })
+      }),
+      // image: new Icon({
+      //   src: 'src/assets/markerMapIcon.png',
+      //   scale: [0,0]
+      // })
     })
   }
 }
