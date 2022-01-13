@@ -20,6 +20,7 @@ import data from 'src/assets/template.json';
 export class AppComponent implements OnInit, AfterViewInit {
   map?: Map;
   details?: Place[];
+  zoom: number = 16;
   @ViewChild('popup') popp?: ElementRef;
   @ViewChild('list') list?: ElementRef;
 
@@ -76,13 +77,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     const tileLayer = new TileLayer({
       source: new OSM(),
-    })
+    });
 
     this.map = new Map({
       layers: [tileLayer],
       view: new View({
         center: fromLonLat([51.33767203120139, 35.69984125123995]),
-        zoom: 17,
+        zoom: this.zoom,
       })
     });
 
@@ -98,7 +99,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.map?.setView(new View({
       center: fromLonLat([longitude, latitude]),
-      zoom: 17
+      zoom: this.zoom,
     }));
 
 

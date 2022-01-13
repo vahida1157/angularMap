@@ -1,25 +1,12 @@
-<style>
-    .my-popover {
-        background-color: bisque;
-    }
-</style>
-
 <div class="map-container">
     <app-map [map]="map">
         <div #popup></div>
     </app-map>
-    <div #list style="width: 15%;height: 100%;overflow-y: scroll;display: block;position: fixed;top: 0;left: 0;background-color: aquamarine;">
-        <div (click)="onClick(detail)" dir="rtl" *ngFor="let detail of details" style="background-color: azure;border-radius: 10px;margin: 10px;padding-right: 10px;padding-left: 10px;padding-top: 5px;padding-bottom: 5px;cursor: pointer;">
+    <div #list class="side-panel">
+        <div (click)="onClick(detail)" dir="rtl" *ngFor="let detail of details" class="item-panel">
             <h3 style="text-align: center;">{{detail.name}}</h3>
             <p>شهر : <span>{{detail.city}}</span></p>
             <p>توضیحات : <span>{{detail.description}}</span></p>
         </div>
     </div>
-    <!-- <div #popover style="width: 15%;height: 100%;overflow-y: scroll;display: block;position: fixed;top: 0;left: 0;background-color: aquamarine;">
-        <div dir="rtl" *ngFor="let detail of details" style="background-color: azure;border-radius: 10px;margin: 10px;padding-right: 10px;padding-left: 10px;padding-top: 5px;padding-bottom: 5px;cursor: pointer;">
-            <h3 style="text-align: center;">{{detail.name}}</h3>
-            <p>شهر : <span>{{detail.city}}</span></p>
-            <p>توضیحات : <span>{{detail.description}}</span></p>
-        </div>
-    </div> -->
 </div>
